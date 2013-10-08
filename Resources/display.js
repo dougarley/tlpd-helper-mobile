@@ -50,6 +50,10 @@ wowRemoteResponse = function() {
         	touchEnabled:false
         });
  
+ 		row.addEventListener("click", function(){
+ 			alert("The click event for " + json.name + " works perfectly!");
+ 		});
+ 
         row.add(nameLabel);
         row.add(nickLabel);
         tableData.push(row);
