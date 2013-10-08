@@ -7,6 +7,8 @@ var win2 = Ti.UI.createWindow({
 });
 var table = Ti.UI.createTableView();
 var tableData = [];
+var feed = [];
+var vyra_loot = 44732;
 var json, mounts, collected, i, ii, row, nameLabel, nickLabel, isFlying, wowRemoteResponse, wowRemoteError;
 
 wowRemoteResponse = function() {
@@ -19,6 +21,17 @@ wowRemoteResponse = function() {
     	row = Ti.UI.createTableViewRow({
             height:'60dp'
         });
+
+        for(j=0;j<json.feed; j++){
+        	if(json.feed.type == "LOOT" && json.feed.itemId == vyra_loot) {
+        		feed.push("Has looted Vyragosa: " + feed.timestamp);
+        	}
+        }
+        
+        row.info = {};
+        row.info.name = json.name;
+        row.info.feed = feed;
+        
         nameLabel = Ti.UI.createLabel({
             text: json.name,
             font: {
@@ -50,8 +63,8 @@ wowRemoteResponse = function() {
         	touchEnabled:false
         });
  
- 		row.addEventListener("click", function(){
- 			alert("The click event for " + json.name + " works perfectly!");
+ 		row.addEventListener("click", function(e){
+ 			alert(e.source.info.name + "\n" + e.source.info.feed[0]);
  		});
  
         row.add(nameLabel);
