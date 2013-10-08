@@ -10,7 +10,8 @@ var tabGroup = Titanium.UI.createTabGroup();
 // create base UI tab and root window
 var win = Titanium.UI.createWindow({  
     title: "Main Tab",
-    backgroundColor:'#fff'
+    backgroundColor:'#fff',
+    layout: 'vertical'
 });
 
 var tab = Titanium.UI.createTab({  
@@ -19,12 +20,33 @@ var tab = Titanium.UI.createTab({
     window:win
 });
 
-var label = Titanium.UI.createLabel({
-	color:'#999',
-	text:"Stand-in Main Window",
-	font:{fontSize:20,fontFamily:'Helvetica Neue'},
-	textAlign:'center',
-	width:'auto'
+var charName = Titanium.App.Properties.getString("foo");
+
+var tf1 = Titanium.UI.createTextField({
+	value:charName,
+	width:250,
+	height:40,
+	top:10,
+	borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,
+	autocorrect:false
+});
+
+var charServ = Titanium.App.Properties.getString("foo");
+
+var tf2 = Titanium.UI.createTextField({
+	value:charServ,
+	width:250,
+	height:40,
+	top:10,
+	borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,
+	autocorrect:false
+});
+
+var btn = Titanium.UI.createButton({
+	title: 'Submit',
+	top: 10,
+	width: 250,
+	height: 40
 });
 
 var tab2 = Titanium.UI.createTab({  
@@ -33,17 +55,9 @@ var tab2 = Titanium.UI.createTab({
     window:myData2.display
 });
 
-/*
-var label2 = Titanium.UI.createLabel({
-	color:'#999',
-	text:"",
-	font:{fontSize:20,fontFamily:'Helvetica Neue'},
-	textAlign:'center',
-	width:'auto'
-});
-*/
-
-win.add(label);
+win.add(tf1);
+win.add(tf2);
+win.add(btn);
 tabGroup.addTab(tab);  
 tabGroup.addTab(tab2);
 
