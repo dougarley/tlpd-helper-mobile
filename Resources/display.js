@@ -65,7 +65,7 @@ wowRemoteError = function(e) {
 };
 
 for(i=0;i<myData.data.length;i++){
-	var url = "http://us.battle.net/api/wow/character/" + myData.data[i].charserver + "/" + myData.data[i].charname + "?fields=mounts";
+	var url = "http://us.battle.net/api/wow/character/" + myData.data[i].charserver + "/" + myData.data[i].charname + "?fields=feed,mounts";
 
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: wowRemoteResponse,
