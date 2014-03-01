@@ -1,6 +1,6 @@
 var moment = require('lib/moment');
 
-var feed, i, nameLabel, wowRemoteResponse, wowRemoteError, vyra_loot;
+var feed, i, nameLabel, wowRemoteResponse, wowRemoteError;
 
 Ti.UI.backgroundColor = '#dddddd';
 
@@ -12,11 +12,13 @@ var win2 = Ti.UI.createWindow({
 var table = Ti.UI.createTableView();
 var tableData = [];
 feed = [];
-vyra_loot = 44732; // Azure Dragonleather Helm
-//vyra_loot = 102884; // Grievous Gladiator's Cuffs of Accuracy
 
 wowRemoteResponse = function() {
-    var json, mounts, isFlying, vyra, vyra_array, row, ii,  j, k, nickLabel;
+    var json, mounts, isFlying, vyra, vyra_array, vyra_loot, vyra_count, row, ii,  j, k, nickLabel;
+
+    vyra_loot = 44732; // Azure Dragonleather Helm
+    //vyra_loot = 102884; // Grievous Gladiator's Cuffs of Accuracy
+
 
     json = JSON.parse(this.responseText);
 	mounts = json.mounts.collected;
@@ -32,29 +34,30 @@ wowRemoteResponse = function() {
     vyra = '';
     vyra_array = [];
 
-    for(j=0;j<json.feed.length; j++){
-    	if(json.feed[j].type == "LOOT" && json.feed[j].itemId == vyra_loot) {
-    	    Ti.API.info('Vyragosa kill!');
+    for(j=0;j<json.feed.length; j++){        
+    	if(json.feed[j].type === "LOOT" && json.feed[j].itemId === vyra_loot) {
     		vyra_array.push("Has looted Vyragosa: " + moment(json.feed[j].timestamp).format('lll'));	
     	}
     }
-        
-    Ti.API.info('Vyragosa has been killed ' + vyra_array.length + ' time(s).');
-    Ti.API.info(vyra_array);
-    
-    
+       
+           
     if (vyra_array.length < 1) {
         Ti.API.info('Vyragosa has not been killed recently by ' + json.name);
         vyra = 'Vyragosa has not been kill recently';
+        vyra_count = '';
     } else {
         Ti.API.info(json.name + ' has killed Vyragosa recently:');
         for(k=0;k<vyra_array.length;k++){
+            vyra += vyra_array[k] + '\n';
+            
             Ti.API.info(vyra_array[k]);
             
-            vyra += vyra_array[k] + '\n';
         }
+        vyra_count = 'has recently looted Vyragosa ' + vyra_array.length + ' time(s).';
     }
     
+    Ti.API.info(vyra_count);
+    Ti.API.info(vyra_array);
     Ti.API.info(vyra);
     
     row = Ti.UI.createTableViewRow({
@@ -80,12 +83,15 @@ wowRemoteResponse = function() {
 		
    for(ii=0;ii<mounts.length;ii++) {
    		if(mounts[ii].creatureId == 32153) {
-   			isFlying = "Has Time-Lost Proto-Drake.";
+   			isFlying = "#F3EEAC";
+		} else {
+		    isFlying = "#FFFFFF";
 		}
    }
         
     nickLabel = Ti.UI.createLabel({
-    	text: isFlying,
+//    	text: isFlying,
+        text: vyra_count,
     	font:{
         	fontSize:'16dp'
     	},
@@ -93,6 +99,7 @@ wowRemoteResponse = function() {
     	left:'15dp',
     	bottom:'5dp',
     	color:'#000',
+    	backgroundColor:isFlying,
         touchEnabled:false
     });
  
