@@ -33,8 +33,8 @@
         <tool-api-level>14</tool-api-level>
         <manifest>
             <supports-screens android:anyDensity="false"/>
-            <uses-sdk android:maxSdkVersion="17"
-                android:minSdkVersion="8" android:targetSdkVersion="14"/>
+            <uses-sdk android:maxSdkVersion="19"
+                android:minSdkVersion="10" android:targetSdkVersion="16"/>
         </manifest>
     </android>
     <mobileweb>
