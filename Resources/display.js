@@ -19,15 +19,11 @@ wowRemoteResponse = function() {
  
     json = JSON.parse(this.responseText);
 	mounts = json.mounts.collected;
+	
 	isFlying = '';
-
     vyra = '';
     vyra_array = [];
-    
-    row = Ti.UI.createTableViewRow({
-        height:'60dp'
-    });
-		
+
     for(j=0;j<json.feed; j++){
     	if(json.feed.type == "LOOT" && json.feed.itemId == vyra_loot) {
     		vyra_array.push("Has looted Vyragosa: " + feed.timestamp);
@@ -48,10 +44,13 @@ wowRemoteResponse = function() {
     
     Ti.API.debug(vyra);
     
-    row.info = {
-        name: json.name,
-        feed: vyra
-    };
+    row = Ti.UI.createTableViewRow({
+        height:'60dp',
+        info : {
+            name: json.name,
+            feed: vyra
+        }
+    });
     
     nameLabel = Ti.UI.createLabel({
         text: json.name,
