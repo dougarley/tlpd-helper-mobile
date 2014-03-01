@@ -10,39 +10,50 @@ var win2 = Ti.UI.createWindow({
 var table = Ti.UI.createTableView();
 var tableData = [];
 feed = [];
-vyra_loot = 44732;
+//vyra_loot = 44732;
+vyra_loot = 102884;
 
 wowRemoteResponse = function() {
     var json, mounts, isFlying, vyra, vyra_array, row, ii,  j, k, nickLabel;
-    
-	Ti.API.debug(this.responseText);
- 
+
     json = JSON.parse(this.responseText);
 	mounts = json.mounts.collected;
+
+    Ti.API.info(json.name);
+    Ti.API.info('-----');
+    Ti.API.info('Response text: ' + this.responseText);
+    Ti.API.info('Mounts collected: ' + json.mounts.collected);
+	Ti.API.info('Player feed: ' + json.feed);
+    Ti.API.info('-----');
 	
 	isFlying = '';
     vyra = '';
     vyra_array = [];
 
-    for(j=0;j<json.feed; j++){
-    	if(json.feed.type == "LOOT" && json.feed.itemId == vyra_loot) {
-    		vyra_array.push("Has looted Vyragosa: " + feed.timestamp);
+    for(j=0;j<json.feed.length; j++){
+    	if(json.feed[j].type == "LOOT" && json.feed[j].itemId == vyra_loot) {
+    	    Ti.API.info('Vyragosa kill!');
+    		vyra_array.push("Has looted Vyragosa: " + json.feed[j].timestamp);
     	}
     }
         
+    Ti.API.info('Vyragosa has been killed ' + vyra_array.length + ' time(s).');
+    Ti.API.info(vyra_array);
+    
+    
     if (vyra_array.length < 1) {
-        Ti.API.debug('Vyragosa has not been killed recently by ' + json.name);
+        Ti.API.info('Vyragosa has not been killed recently by ' + json.name);
         vyra = 'Vyragosa has not been kill recently';
     } else {
-        Ti.API.debug(json.name + ' has killed Vyragosa recently:');
+        Ti.API.info(json.name + ' has killed Vyragosa recently:');
         for(k=0;k<vyra_array.length;k++){
-            Ti.API.debug(vyra_array[k]);
+            Ti.API.info(vyra_array[k]);
             
-            vyra =+ vyra_array[k] + '\n';
+            vyra += vyra_array[k] + '\n';
         }
     }
     
-    Ti.API.debug(vyra);
+    Ti.API.info(vyra);
     
     row = Ti.UI.createTableViewRow({
         height:'60dp',
@@ -87,17 +98,18 @@ wowRemoteResponse = function() {
 		alert(e.source.info.name + "\n" + e.source.info.feed);
 	});
  
+    Ti.API.info('===============================');
+ 
     row.add(nameLabel);
     row.add(nickLabel);
     tableData.push(row);
-
     table.setData(tableData);
 };
 
 wowRemoteError = function(e) {
-    Ti.API.debug("STATUS: " + this.status);
-    Ti.API.debug("TEXT:   " + this.responseText);
-    Ti.API.debug("ERROR:  " + e.error);
+    Ti.API.info("STATUS: " + this.status);
+    Ti.API.info("TEXT:   " + this.responseText);
+    Ti.API.info("ERROR:  " + e.error);
     alert('There was an error retrieving the remote data. Try again.');
 };
 
