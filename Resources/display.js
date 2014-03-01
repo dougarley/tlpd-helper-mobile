@@ -12,8 +12,8 @@ var win2 = Ti.UI.createWindow({
 var table = Ti.UI.createTableView();
 var tableData = [];
 feed = [];
-//vyra_loot = 44732;
-vyra_loot = 102884;
+//vyra_loot = 44732; // Azure Dragonleather Helm
+vyra_loot = 102884; // Grievous Gladiator's Cuffs of Accuracy
 
 wowRemoteResponse = function() {
     var json, mounts, isFlying, vyra, vyra_array, row, ii,  j, k, nickLabel;
