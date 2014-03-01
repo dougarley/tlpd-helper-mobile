@@ -9,7 +9,7 @@ var table = Ti.UI.createTableView();
 var tableData = [];
 var feed = [];
 var vyra_loot = 44732;
-var json, mounts, collected, i, ii, row, nameLabel, nickLabel, isFlying, wowRemoteResponse, wowRemoteError;
+var json, mounts, collected, i, ii, row, nameLabel, nickLabel, isFlying, wowRemoteResponse, wowRemoteError, vyra, vyra_array;
 
 wowRemoteResponse = function() {
 		Ti.API.debug(this.responseText);
@@ -17,20 +17,38 @@ wowRemoteResponse = function() {
     	json = JSON.parse(this.responseText);
 		mounts = json.mounts.collected;
 		isFlying = '';
-				
-    	row = Ti.UI.createTableViewRow({
+
+        vyra = '';
+        vyra_array = [];
+        
+        row = Ti.UI.createTableViewRow({
             height:'60dp'
         });
-
+		
         for(j=0;j<json.feed; j++){
         	if(json.feed.type == "LOOT" && json.feed.itemId == vyra_loot) {
-        		feed.push("Has looted Vyragosa: " + feed.timestamp);
+        		vyra_array.push("Has looted Vyragosa: " + feed.timestamp);
         	}
         }
         
-        row.info = {};
-        row.info.name = json.name;
-        row.info.feed = feed;
+        if (vyra_array.length < 1) {
+            Ti.API.debug('Vyragosa has not been killed recently by ' + json.name);
+            vyra = 'Vyragosa has not been kill recently';
+        } else {
+            Ti.API.debug(json.name + ' has killed Vyragosa recently:');
+            for(var k=0;k<vyra_array.length;k++){
+                Ti.API.debug(vyra_array[k]);
+                
+                vyra =+ vyra_array[k] + '\n';
+            }
+        }
+        
+        Ti.API.debug(vyra);
+        
+        row.info = {
+            name: json.name,
+            feed: vyra
+        };
         
         nameLabel = Ti.UI.createLabel({
             text: json.name,
@@ -64,7 +82,7 @@ wowRemoteResponse = function() {
         });
  
  		row.addEventListener("click", function(e){
- 			alert(e.source.info.name + "\n" + e.source.info.feed[0]);
+ 			alert(e.source.info.name + "\n" + e.source.info.feed);
  		});
  
         row.add(nameLabel);
