@@ -1,3 +1,5 @@
+var moment = require('lib/moment');
+
 var feed, i, nameLabel, wowRemoteResponse, wowRemoteError, vyra_loot;
 
 Ti.UI.backgroundColor = '#dddddd';
@@ -33,7 +35,7 @@ wowRemoteResponse = function() {
     for(j=0;j<json.feed.length; j++){
     	if(json.feed[j].type == "LOOT" && json.feed[j].itemId == vyra_loot) {
     	    Ti.API.info('Vyragosa kill!');
-    		vyra_array.push("Has looted Vyragosa: " + json.feed[j].timestamp);
+    		vyra_array.push("Has looted Vyragosa: " + moment(json.feed[j].timestamp).format('lll'));	
     	}
     }
         
