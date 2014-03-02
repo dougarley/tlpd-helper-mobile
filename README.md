@@ -1,0 +1,2 @@
+# Time-Lost Proto-Drake Tracker #
+Time-Lost Proto-Drake Tracker , or TLPD-Helper-Mobile, is a mobile version of my [TLPD Helper](https://github.com/dougarley/tlpd-helper) Node.JS application created with Titanium Studio. This application tracks approximate times of Vyragosa kills based on the loot feeds from a user-provided list of players.
