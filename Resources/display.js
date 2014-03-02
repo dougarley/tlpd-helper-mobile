@@ -14,17 +14,18 @@ var tableData = [];
 feed = [];
 
 wowRemoteResponse = function() {
-    var json, mounts, hasTLPD, vyra, vyra_array, vyra_loot, vyra_count, row, ii,  j, k, nickLabel;
+    var json, mounts, hasTLPD, vyra_output, vyra_array, vyra_loot, vyra_count, row, ii,  j, k, nickLabel;
 
     hasTLPD = false;
-    vyra = '';
-    vyra_loot = 44732; // Azure Dragonleather Helm
-    vyra_array = [];
-    vyra_count = '';
+    vyra_loot = 44732;  // Azure Dragonleather Helm ID
+    vyra_array = [];    // Array storing Vyragosa kills   
+    vyra_count = '';    // String indentifying number of Vyragosa kills.
+    vyra_output = 'Vyragosa has not been kill recently';         // String output for array    
 
-    json = JSON.parse(this.responseText);
-	mounts = json.mounts.collected;
+    json = JSON.parse(this.responseText);  // Parse response
+	mounts = json.mounts.collected;        // Store collected mounts array
 
+    // Announce Player Name, response, mounts, and feed
     Ti.API.info(json.name);
     Ti.API.info('-----');
     Ti.API.info('Response text: ' + this.responseText);
@@ -32,49 +33,57 @@ wowRemoteResponse = function() {
 	Ti.API.info('Player feed: ' + json.feed);
     Ti.API.info('-----');
 	
+	// Check player feed for recent Vyragosa loot
     for(j=0;j<json.feed.length; j++){        
     	if(json.feed[j].type === "LOOT" && json.feed[j].itemId === vyra_loot) {
     		vyra_array.push("Has looted Vyragosa: " + moment(json.feed[j].timestamp).format('lll'));	
     	}
     }
        
-           
-    if (vyra_array.length < 1) {
-        Ti.API.info('Vyragosa has not been killed recently by ' + json.name);
-        vyra = 'Vyragosa has not been kill recently';
-    } else {
+    // Ready Vyragosa data
+    if (vyra_array.length > 0) {
+        // If Vyragosa has been recently looted..
         Ti.API.info(json.name + ' has killed Vyragosa recently:');
+        
+        vyra_output = ''; //Clear out Vyragosa Output
+        
+        // Loop through array of Vyragosa loot data
         for(k=0;k<vyra_array.length;k++){
-            vyra += vyra_array[k] + '\n';
-            
             Ti.API.info(vyra_array[k]);
+            
+            // For each Vyragosa loot, add loot data to string output;
+            vyra_output += vyra_array[k] + '\n'; 
         }
+        
+        // Set label for number of Vyragosa loots
         vyra_count = 'has recently looted Vyragosa ' + vyra_array.length + ' time(s).';
     }
     
     Ti.API.info(vyra_count);
-    Ti.API.info(vyra_array);
-    Ti.API.info(vyra);
+    Ti.API.info(vyra_output);
 
+    // Check to see if player already has TLPD
     for(ii=0;ii<mounts.length;ii++) {
         if(mounts[ii].creatureId === 32153) {
             Ti.API.info('Has Time-Lost Proto-Drake');
-            hasTLPD = true;
+            hasTLPD = true; // Set boolean TRUE if they do
         } 
     }
    
+    // Build table view row
     row = Ti.UI.createTableViewRow({
         height:'60dp',
         rightImage: '',
         backgroundColor: '#fff',
         info : {
             name: json.name,
-            feed: vyra
+            feed: vyra_output
         }
     });
     
-    if(hasTLPD) { row.rightImage = 'tlpd.png'; };
+    if(hasTLPD) { row.rightImage = 'tlpd.png'; };   // If player has TLPD, update right-side image
     
+    // Player name label
     nameLabel = Ti.UI.createLabel({
         text: json.name,
         font: {
@@ -88,8 +97,8 @@ wowRemoteResponse = function() {
     	touchEnabled:false
     });
         
+    // Vyragosa loot into label
     nickLabel = Ti.UI.createLabel({
-//    	text: isFlying,
         text: vyra_count,
     	font:{
         	fontSize:'16dp'
@@ -100,7 +109,8 @@ wowRemoteResponse = function() {
     	color:'#000',
         touchEnabled:false
     });
- 
+
+    // Click event listener to display Vyragosa loot data
 	row.addEventListener("click", function(e){
 		alert(e.source.info.name + "\n" + e.source.info.feed);
 	});
