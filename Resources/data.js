@@ -1,9 +1,9 @@
 //var test1 = {};
 var characters = [
-		{
-			"charname" : "Zaltana",
-			"charserver" : "the-venture-co"
-		},
+        {
+            "charname" : "Zaltana",
+            "charserver" : "the-venture-co"
+        },
 		{
 			"charname" : "Zerowed",
 			"charserver" : "the-venture-co"
