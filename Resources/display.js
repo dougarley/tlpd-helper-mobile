@@ -14,11 +14,13 @@ var tableData = [];
 feed = [];
 
 wowRemoteResponse = function() {
-    var json, mounts, isFlying, vyra, vyra_array, vyra_loot, vyra_count, row, ii,  j, k, nickLabel;
+    var json, mounts, hasTLPD, vyra, vyra_array, vyra_loot, vyra_count, row, ii,  j, k, nickLabel;
 
+    hasTLPD = false;
+    vyra = '';
     vyra_loot = 44732; // Azure Dragonleather Helm
-    //vyra_loot = 102884; // Grievous Gladiator's Cuffs of Accuracy
-
+    vyra_array = [];
+    vyra_count = '';
 
     json = JSON.parse(this.responseText);
 	mounts = json.mounts.collected;
@@ -30,10 +32,6 @@ wowRemoteResponse = function() {
 	Ti.API.info('Player feed: ' + json.feed);
     Ti.API.info('-----');
 	
-	isFlying = '';
-    vyra = '';
-    vyra_array = [];
-
     for(j=0;j<json.feed.length; j++){        
     	if(json.feed[j].type === "LOOT" && json.feed[j].itemId === vyra_loot) {
     		vyra_array.push("Has looted Vyragosa: " + moment(json.feed[j].timestamp).format('lll'));	
@@ -44,14 +42,12 @@ wowRemoteResponse = function() {
     if (vyra_array.length < 1) {
         Ti.API.info('Vyragosa has not been killed recently by ' + json.name);
         vyra = 'Vyragosa has not been kill recently';
-        vyra_count = '';
     } else {
         Ti.API.info(json.name + ' has killed Vyragosa recently:');
         for(k=0;k<vyra_array.length;k++){
             vyra += vyra_array[k] + '\n';
             
             Ti.API.info(vyra_array[k]);
-            
         }
         vyra_count = 'has recently looted Vyragosa ' + vyra_array.length + ' time(s).';
     }
@@ -59,14 +55,25 @@ wowRemoteResponse = function() {
     Ti.API.info(vyra_count);
     Ti.API.info(vyra_array);
     Ti.API.info(vyra);
-    
+
+    for(ii=0;ii<mounts.length;ii++) {
+        if(mounts[ii].creatureId === 32153) {
+            Ti.API.info('Has Time-Lost Proto-Drake');
+            hasTLPD = true;
+        } 
+    }
+   
     row = Ti.UI.createTableViewRow({
         height:'60dp',
+        rightImage: '',
+        backgroundColor: '#fff',
         info : {
             name: json.name,
             feed: vyra
         }
     });
+    
+    if(hasTLPD) { row.rightImage = 'tlpd.png'; };
     
     nameLabel = Ti.UI.createLabel({
         text: json.name,
@@ -80,14 +87,6 @@ wowRemoteResponse = function() {
     	color:'#000',
     	touchEnabled:false
     });
-		
-   for(ii=0;ii<mounts.length;ii++) {
-   		if(mounts[ii].creatureId == 32153) {
-   			isFlying = "#F3EEAC";
-		} else {
-		    isFlying = "#FFFFFF";
-		}
-   }
         
     nickLabel = Ti.UI.createLabel({
 //    	text: isFlying,
@@ -99,7 +98,6 @@ wowRemoteResponse = function() {
     	left:'15dp',
     	bottom:'5dp',
     	color:'#000',
-    	backgroundColor:isFlying,
         touchEnabled:false
     });
  
