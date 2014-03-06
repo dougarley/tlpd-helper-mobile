@@ -1,5 +1,4 @@
-//var test1 = {};
-var characters = [
+exports.data = [
         {
             "charname" : "Zaltana",
             "charserver" : "the-venture-co"
@@ -49,5 +48,3 @@ var characters = [
 			"charserver" : "the-venture-co"
 		}
 ];
-
-exports.data = characters;
