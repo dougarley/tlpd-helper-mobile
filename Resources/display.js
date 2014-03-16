@@ -74,16 +74,12 @@ wowRemoteResponse = function() {
     
     for(r=0;r<table.data[0].rows.length;r++){
         var thisRow = table.data[0].rows[r];
-        console.log('This row: ' + thisRow);
-        console.log(thisRow['character_name']);
-        console.log('Label 0: ' + thisRow.children[0].text);
         
         if(thisRow['character_name'] == json.name && thisRow['character_realm'] == json.realm){
             if(hasTLPD) { thisRow.rightImage = 'tlpd.png'; };   // If player has TLPD, update right-side image
             
             thisRow.children[1].text = vyra_count;
-            console.log('Vyra Label: ' + thisRow.children[1].text);
-            
+
             thisRow.info = info = {
                 name: json.name,
                 feed: vyra_output
