@@ -4,12 +4,12 @@ var feed, i, nameLabel, wowRemoteResponse, wowRemoteError;
 
 Ti.UI.backgroundColor = '#dddddd';
 
-var myData = require('data');
+//var myData = require('data');
 var win2 = Ti.UI.createWindow({
 	title: "Data",
 	backgroundColor:"#ffffff"
 });
-var table = Ti.UI.createTableView();
+
 var tableData = [];
 feed = [];
 
@@ -69,58 +69,33 @@ wowRemoteResponse = function() {
             hasTLPD = true; // Set boolean TRUE if they do
         } 
     }
-   
-    // Build table view row
-    row = Ti.UI.createTableViewRow({
-        height:'60dp',
-        rightImage: '',
-        backgroundColor: '#fff',
-        info : {
-            name: json.name,
-            feed: vyra_output
-        }
-    });
     
-    if(hasTLPD) { row.rightImage = 'tlpd.png'; };   // If player has TLPD, update right-side image
-    
-    // Player name label
-    nameLabel = Ti.UI.createLabel({
-        text: json.name,
-        font: {
-            fontSize:'24dp',
-        	fontWeight:'bold'
-    	},
-    	height:'auto',
-    	left:'10dp',
-    	top:'5dp',
-    	color:'#000',
-    	touchEnabled:false
-    });
-        
-    // Vyragosa loot into label
-    nickLabel = Ti.UI.createLabel({
-        text: vyra_count,
-    	font:{
-        	fontSize:'16dp'
-    	},
-    	height:'auto',
-    	left:'15dp',
-    	bottom:'5dp',
-    	color:'#000',
-        touchEnabled:false
-    });
-
-    // Click event listener to display Vyragosa loot data
-	row.addEventListener("click", function(e){
-		alert(e.source.info.name + "\n" + e.source.info.feed);
-	});
- 
     Ti.API.info('===============================');
- 
-    row.add(nameLabel);
-    row.add(nickLabel);
-    tableData.push(row);
-    table.setData(tableData);
+    
+    for(r=0;r<table.data[0].rows.length;r++){
+        var thisRow = table.data[0].rows[r];
+        console.log('This row: ' + thisRow);
+        console.log(thisRow['character_name']);
+        console.log('Label 0: ' + thisRow.children[0].text);
+        
+        if(thisRow['character_name'] == json.name && thisRow['character_realm'] == json.realm){
+            if(hasTLPD) { thisRow.rightImage = 'tlpd.png'; };   // If player has TLPD, update right-side image
+            
+            thisRow.children[1].text = vyra_count;
+            console.log('Vyra Label: ' + thisRow.children[1].text);
+            
+            thisRow.info = info = {
+                name: json.name,
+                feed: vyra_output
+            };
+
+            thisRow.addEventListener("click", function(e){
+                alert(e.source.info.name + "\n" + e.source.info.feed);
+            });  
+        }
+    }
+   
+    Ti.API.info('Row pushed for ' + json.name);
 };
 
 wowRemoteError = function(e) {
@@ -130,18 +105,87 @@ wowRemoteError = function(e) {
     alert('There was an error retrieving the remote data. Try again.');
 };
 
-for(i=0;i<myData.data.length;i++){
-	var url = "http://us.battle.net/api/wow/character/" + myData.data[i].charserver + "/" + myData.data[i].charname + "?fields=feed,mounts";
+exports.pull = function(array) {
+    if(array.length < 1) {
+        Ti.API.info('No characters in database');
+        
+        Ti.API.info('tableData emptied');
+        tableData = [];
+    
+        var row = Ti.UI.createTableViewRow({
+            height:'60dp',
+            backgroundColor: '#fff',
+            title: 'Add a character'        
+        });
 
-	var xhr = Ti.Network.createHTTPClient({
-	    onload: wowRemoteResponse,
-	    onerror: wowRemoteError,
-	    timeout:5000
-	});
+        Ti.API.info('Default row pushed');
+        tableData.push(row);
+    } else {
+        Ti.API.info('Database has ' + array.length + ' characters stored.');
+        
+        Ti.API.info('tableData emptied');
+        tableData = [];
+        
+        Ti.API.info('Pulling character info:');
+        
+        for(i=0;i<array.length;i++){
+            var row = Ti.UI.createTableViewRow({
+                height:'60dp',
+                backgroundColor: '#fff',
+                character_name: array[i].charname,
+                character_realm: array[i].charserver
+            });
+            var charName = Ti.UI.createLabel({
+                text: array[i].charname + ' (' + array[i].charserver  + ')',
+                font: {
+                    fontSize:'24dp',
+                    fontWeight:'bold'
+                },
+                height:'auto',
+                left:'10dp',
+                top:'5dp',
+                color:'#000',
+                touchEnabled:false               
+            });
 
-	xhr.open("GET", url);
-	xhr.send();
-}
-win2.add(table);
-exports.display = win2;
+            var vyraKills = Ti.UI.createLabel({
+                text: '',
+                font:{
+                    fontSize:'16dp'
+                },
+                height:'auto',
+                left:'15dp',
+                bottom:'5dp',
+                color:'#000',
+                touchEnabled:false
+            });            
+
+            row.add(charName);
+            row.add(vyraKills);
+            tableData.push(row);
+        }
+        
+        for(i=0;i<array.length;i++){
+            
+            Ti.API.info('Begin character pull.');
+        	var url = "http://us.battle.net/api/wow/character/" + array[i].charserver + "/" + array[i].charname + "?fields=feed,mounts";
+        
+        	var xhr = Ti.Network.createHTTPClient({
+        	    onload: wowRemoteResponse,
+        	    onerror: wowRemoteError,
+        	    timeout:5000
+        	});
+        
+        	xhr.open("GET", url);
+        	xhr.send();
+        	Ti.API.info('Complete character pull.');
+        }
+    }
+    
+    Ti.API.info('Pull complete. Data sent.');
+    return tableData;
+};
+
+//win2.add(table);
+//exports.display = win2;
 //win.open();

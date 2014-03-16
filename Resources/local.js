@@ -12,9 +12,11 @@ exports.db = db;
 db.execute('CREATE TABLE IF NOT EXISTS characters (id INTEGER PRIMARY KEY, name TEXT, server TEXT)');
 // ==========================================================================================================
 
+var remoteData = require('display');
+
 function getRowData() {
     //Create new empty array
-    var newdata = [];
+    var characters = [];
     
     //Loop through data for window #2
     var rows = db.execute('SELECT * FROM characters');
@@ -28,29 +30,39 @@ function getRowData() {
         
         //Add table row
         //Store the fields directly to the rowData
-        newdata.push({
-            title: name + " (" + server + ")",
-            id: id
+        characters.push({
+            charname: name,
+            charserver: server
         });
         rows.next();
     }
     
-    return newdata;
+    return characters;
 }
-exports.read = getRowData();
+
+Ti.API.info('Doing initial data pull');
+var data = getRowData();
+
+Ti.API.info('Setting initial table rows');
+exports.read = remoteData.pull(data);
 
 exports.person = function Person(name, server){
     //Set general object properties
     this.name = name;
     this.server = server;
     this.full_name = function(){
-        return this.name + " (" + this.server + ")",
+        return this.name + " (" + this.server + ")";
     };
     
     //Private Method to refresh table rows
     var refresh = function(){
         data = getRowData();
-        tableView.setData(data);
+        
+        Ti.API.info('Pulling ' + data.length + ' characters');
+        var moreData = remoteData.pull(data);
+        
+        Ti.API.info('Setting table rows');
+        table.setData(moreData);
     };
     
     //Create and Update function
@@ -67,7 +79,7 @@ exports.person = function Person(name, server){
             if(id) {
                 // If there's an ID, then EDIT
                 // Set that data, and sanitize with parameterization
-                db.execute("UPDATE users SET name=?, server=?, WHERE id=?", this.name, this.server, id);
+                db.execute("UPDATE characters SET name=?, server=?, WHERE id=?", this.name, this.server, id);
                 Ti.API.debug(this.full_name() + " saved with the id: " + id);   
                         
                 // Refresh table view with changes
@@ -100,14 +112,12 @@ exports.person = function Person(name, server){
                 alert(this.full_name() + ' has been saved!');
         
                 //Clear input fields upon success.
-                savefname.value = '';
-                savelname.value = '';
-                savezipcode.value = '';
+                saveName.value = '';
+                saveServer.value = '';
                 
                 //Drop keyboard.
-                savefname.blur();
-                savelname.blur();
-                savezipcode.blur();
+                saveName.blur();
+                saveServer.blur();
             }
         }
     };
