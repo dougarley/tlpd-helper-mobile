@@ -76,11 +76,11 @@ wowRemoteResponse = function() {
         var thisRow = table.data[0].rows[r];
         
         if(thisRow['character_name'] == json.name && thisRow['character_realm'] == json.realm){
-            if(hasTLPD) { thisRow.rightImage = 'tlpd.png'; };   // If player has TLPD, update right-side image
+            if(hasTLPD) { thisRow.setRightImage('tlpd.png'); };   // If player has TLPD, update right-side image
             
-            thisRow.children[1].text = vyra_count;
+            thisRow.children[1].setText = vyra_count;
 
-            thisRow.info = info = {
+            thisRow.info = {
                 name: json.name,
                 feed: vyra_output
             };
@@ -181,7 +181,3 @@ exports.pull = function(array) {
     Ti.API.info('Pull complete. Data sent.');
     return tableData;
 };
-
-//win2.add(table);
-//exports.display = win2;
-//win.open();
