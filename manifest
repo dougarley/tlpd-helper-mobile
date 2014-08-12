@@ -1,9 +1,9 @@
-#appname: TLPD-Mobile
-#appid: com.dougarley.tlpd
-#type: mobile
-#guid: 7b9cdcf2-1709-4567-afd6-ff1b8179ce67
-#version: 1.0
-#publisher: not specified
-#url: not specified
-#image: appicon.png
-#desc: not specified
+#appname:TLPD-Mobile
+#appid:com.dougarley.tlpd
+#type:mobile
+#guid:7b9cdcf2-1709-4567-afd6-ff1b8179ce67
+#version:1.0
+#publisher:Doug
+#url:http://dougarley.com
+#image:appicon.png
+#desc:not specified
