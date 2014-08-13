@@ -1,7 +1,7 @@
 var moment = require('lib/moment');
 var character = require('classCharacter');
 
-var Character, feed, i, nameLabel, wowRemoteResponse, wowRemoteError;
+var feed, i, nameLabel, wowRemoteResponse, wowRemoteError;
 
 Ti.UI.backgroundColor = '#dddddd';
 
@@ -13,17 +13,6 @@ var win2 = Ti.UI.createWindow({
 
 var tableData = [];
 feed = [];
-
-Character = function(){
-	this.name = name,
-	this.server = server,
-	this.hasTLPD = false,
-	this.lootHistory = null,
-	this.vyraKills = null,
-	this.checkTLPD = function() {},
-	this.checkLootHistory = function() {},
-	this.pullData = function()
-};
 
 wowRemoteResponse = function() {
     var json, currCharacter, i;
