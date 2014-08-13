@@ -25,8 +25,8 @@ wowRemoteResponse = function() {
     // Announce Player Name, response, mounts, and feed
     Ti.API.info(currCharacter.name);
     Ti.API.info('-----');
-    Ti.API.info('Mounts collected: ' + currCharacter.mounts.collected);
-    Ti.API.info('Player feed: ' + currCharacter.feed);
+    Ti.API.info('Mounts collected: ' + currCharacter.mounts);
+    Ti.API.info('Player feed: ' + currCharacter.lootHistory);
     Ti.API.info('-----');
     
     currCharacter.getTLPD();
@@ -65,12 +65,13 @@ exports.pull = function(array) {
         
         Ti.API.info('Pulling character info:');
         
-        for(i=0;i<array.length;i++){
+        for(i = 0; i < array.length; i++){
             var row = Ti.UI.createTableViewRow({
                 height:'60dp',
                 backgroundColor: '#fff',
                 character_name: array[i].charname,
-                character_realm: array[i].charserver
+                character_realm: array[i].charserver,
+                kills: ''
             });
             var charName = Ti.UI.createLabel({
                 text: array[i].charname + ' (' + array[i].charserver  + ')',
@@ -102,7 +103,7 @@ exports.pull = function(array) {
             tableData.push(row);
         }
         
-        for(i=0;i<array.length;i++){
+        for (i = 0; i < array.length; i++) {
             
             Ti.API.info('Begin character pull.');
         	var url = "http://us.battle.net/api/wow/character/" + array[i].charserver + "/" + array[i].charname + "?fields=feed,mounts";
