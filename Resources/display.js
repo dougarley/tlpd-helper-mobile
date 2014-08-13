@@ -29,8 +29,8 @@ wowRemoteResponse = function() {
     Ti.API.info('Player feed: ' + currCharacter.feed);
     Ti.API.info('-----');
     
-    currentCharacter.getTLPD();
-    currentCharacter.getVyraKills();
+    currCharacter.getTLPD();
+    currCharacter.getVyraKills();
 
     Ti.API.info('===============================');
 

@@ -1,7 +1,7 @@
 // Character Class
 exports.Character = function(name, realm, mounts, feed){
     this.name = name;
-    this.server = server;
+    this.server = realm;
     this.mounts = mounts;
     this.lootHistory = feed;
     this.hasTLPD = false;
@@ -18,7 +18,7 @@ exports.Character = function(name, realm, mounts, feed){
         }
     };
     this.getVyraKills = function() {
-        var vyra_loot, vyra_output , i;
+        var vyra_loot, vyra_output, vyra_count, i, k;
 
         vyra_loot = 44732;  // Azure Dragonleather Helm ID
 
@@ -60,7 +60,7 @@ exports.Character = function(name, realm, mounts, feed){
         var i;
 
         for(i = 0; i < table.data[0].rows.length; i++){
-            var row = table.data[0].rows[r];
+            var row = table.data[0].rows[i];
             
             if(row.character_name == this.name && row.character_realm == this.realm){
                 if(this.hasTLPD) { row.setRightImage('tlpd.png'); };   // If player has TLPD, update right-side image
@@ -76,6 +76,6 @@ exports.Character = function(name, realm, mounts, feed){
             }
         }
        
-        Ti.API.info('Row pushed for ' + json.name);
+        Ti.API.info('Row pushed for ' + this.name);
     };
 };
