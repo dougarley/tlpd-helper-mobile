@@ -66,6 +66,8 @@ exports.pull = function(array) {
         Ti.API.info('Pulling character info:');
         
         for(i = 0; i < array.length; i++){
+        	
+        	// Create new table row
             var row = Ti.UI.createTableViewRow({
                 height:'60dp',
                 backgroundColor: '#fff',
@@ -73,6 +75,8 @@ exports.pull = function(array) {
                 character_realm: array[i].charserver,
                 kills: ''
             });
+            
+            // Create character name label
             var charName = Ti.UI.createLabel({
                 text: array[i].charname + ' (' + array[i].charserver  + ')',
                 font: {
@@ -86,6 +90,7 @@ exports.pull = function(array) {
                 touchEnabled:false               
             });
 
+			// Create empty label of Vyragosa kills
             var vyraKills = Ti.UI.createLabel({
                 text: '',
                 font:{
@@ -98,13 +103,14 @@ exports.pull = function(array) {
                 touchEnabled:false
             });            
 
+			// Add labels to row; row to table
             row.add(charName);
             row.add(vyraKills);
             tableData.push(row);
         }
         
         for (i = 0; i < array.length; i++) {
-            
+            // Get each character in array, do a remote data pull for each
             Ti.API.info('Begin character pull.');
         	var url = "http://us.battle.net/api/wow/character/" + array[i].charserver + "/" + array[i].charname + "?fields=feed,mounts";
         
