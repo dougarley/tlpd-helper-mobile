@@ -15,7 +15,7 @@ exports.data = [
 			"charname" : "Roksonix",
 			"charserver" : "the-venture-co"
 		},
-		{
+		{	
 			"charname" : "Siani",
 			"charserver" : "the-venture-co"
 		},
