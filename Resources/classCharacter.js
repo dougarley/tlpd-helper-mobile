@@ -1,7 +1,11 @@
-// Character Class
+/**
+ * Name: Character Class
+ * Description: Instantiates Character Object, pulls TLPD info, refresh table view rows
+**/
+
 exports.Character = function(name, realm, mounts, feed){
     this.name = name;
-    this.server = realm;
+    this.realm = realm;
     this.mounts = mounts;
     this.lootHistory = feed;
     this.hasTLPD = false;
@@ -53,8 +57,8 @@ exports.Character = function(name, realm, mounts, feed){
             vyra_count = 'has recently looted Vyragosa ' + vyra_array.length + ' time(s).';
         }
         
-        Ti.API.info(vyra_count);
-        Ti.API.info(vyra_output);   
+        // Ti.API.info(vyra_count);
+        // Ti.API.info(vyra_output);   
     };
     this.updateRow = function() {
         var i;
@@ -62,16 +66,23 @@ exports.Character = function(name, realm, mounts, feed){
         for(i = 0; i < table.data[0].rows.length; i++){
             var row = table.data[0].rows[i];
             
+            Ti.API.debug(JSON.stringify(row));
+            Ti.API.debug('Character Name: ' + this.name);
+            Ti.API.debug('Realm Name:' + this.realm);
+            
             if(row.character_name == this.name && row.character_realm == this.realm){
-                if(this.hasTLPD) { row.setRightImage('tlpd.png'); };   // If player has TLPD, update right-side image
+                if(this.hasTLPD) { 
+                	Ti.API.debug('Has TLPD; updating Row Info');
+
+                	row.setRightImage('tlpd.png');
+                };   
                 
                 row.children[1].setText(this.vyraKills.length);
 
-                row.info.name = this.name;
-                row.info.feed = this.vyraKills.length;
+                // row.info.feed = this.vyraKills.length;
 
                 row.addEventListener("click", function(e){
-                    alert(e.source.info.name + "\n" + e.source.info.feed);
+                    alert(e.source.charname + "\n" + e.source.info.feed);
                 });  
             }
         }
